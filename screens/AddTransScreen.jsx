@@ -1,9 +1,8 @@
-import { View, Text, TextInput, TouchableOpacity } from 'react-native'
+import { View, Text, TextInput, TouchableOpacity, Image } from 'react-native'
 import React, { useState } from 'react'
 import ScreenWrapper from '../components/screenWrapper'
 import { colors } from '../theme'
 import BackButton from '../components/backButton'
-import { Image } from 'react-native-svg'
 import { useNavigation } from '@react-navigation/native'
 
 export default function AddTransScreen() {
@@ -23,8 +22,8 @@ export default function AddTransScreen() {
     <ScreenWrapper>
       <View className="flex justify-between h-full mx-4">
         <View>
-          <View className="relative mt-5">
-            <View className="absolute top-0 left-0">
+          <View className="mt-5">  
+             <View className="top-0 left-0">   
               <BackButton />
             </View>
               <Text className={`${colors.heading} text-xl font-bold text-center`}>Add Transaction</Text>
