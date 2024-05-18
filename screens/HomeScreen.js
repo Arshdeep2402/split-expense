@@ -5,6 +5,8 @@ import { colors } from '../theme'
 import randomImage from '../assets/images/randomImage'
 import EmptyList from '../components/emptyList'
 import { useNavigation } from '@react-navigation/native'
+import { signOut } from 'firebase/auth'
+import { auth } from '../config/firebase'
 
 var items = [
     {
@@ -29,15 +31,20 @@ var items = [
     },
 ]
 
+
 export default function HomeScreen() {
 
     const navigation = useNavigation();
+
+    const handleLogout = async () => {
+        await signOut(auth);
+    }
 
   return (
    <ScreenWrapper className="flex-1">
     <View className="flex-row justify-between items-center p-4">
        <Text className={`${colors.heading} font-bold text-3xl shadow-sm`}>ExpSplitz</Text>
-       <TouchableOpacity className="p-2 px-3 bg-white border border-gray-200 rounded-full">
+       <TouchableOpacity onPress={handleLogout} className="p-2 px-3 bg-white border border-gray-200 rounded-full">
         <Text className={colors.heading}>Logut</Text>
        </TouchableOpacity>
     </View>
@@ -64,7 +71,7 @@ export default function HomeScreen() {
                 className="mx-1"
                 renderItem={({item}) => {
                     return (
-                        <TouchableOpacity className="bg-whit p-3 rounded-2xl mb-3 shadow-sm">
+                        <TouchableOpacity onPress={() => navigation.navigate('Expense', {...item})} className="bg-whit p-3 rounded-2xl mb-3 shadow-sm">
                             <View>
                                 <Image source={randomImage()} className="w-36 h-36 mb-2" />
                                 <Text className={`${colors.heading} font-bold`}>{item.place}</Text>

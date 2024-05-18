@@ -4,17 +4,37 @@ import ScreenWrapper from '../components/screenWrapper'
 import { colors } from '../theme'
 import BackButton from '../components/backButton'
 import { useNavigation } from '@react-navigation/native'
+import Loading from '../components/loading'
+import Snackbar from 'react-native-snackbar'
+import { addDoc } from 'firebase/firestore'
+import { tripsRef } from '../config/firebase'
+import { useSelector } from 'react-redux'
 
 export default function AddTransScreen() {
   const [place, setPlace] = useState('');
   const [country, setCountry] = useState('');
   const navigation = useNavigation();
+  const [loading, setLoading] = useState(false);
+  const {user} = useSelector(state=> state.user)
 
-  const handleTransaction = () => {
+  const handleTransaction = async () => {
     if(place && country){
-      navigation.navigate('Home');
+      // navigation.navigate('Home');
+      setLoading(true);
+      let doc = await addDoc(tripsRef, {
+        place,
+        country,
+        userId: user.uid,
+      });
+      setLoading(false);
+      if(doc && doc.id){
+        navigation.goBack();
+      }
     } else{
-
+      Snackbar.show({
+        text: 'Place and Country are required!',
+        backgroundColor: 'red',
+      });
     }
   }
 
@@ -22,8 +42,8 @@ export default function AddTransScreen() {
     <ScreenWrapper>
       <View className="flex justify-between h-full mx-4">
         <View>
-          <View className="mt-5">  
-             <View className="top-0 left-0">   
+          <View className=" mt-5">
+            <View className="top-0 left-0"> 
               <BackButton />
             </View>
               <Text className={`${colors.heading} text-xl font-bold text-center`}>Add Transaction</Text>
@@ -41,9 +61,16 @@ export default function AddTransScreen() {
         </View>
        
         <View>
-          <TouchableOpacity onPress={handleTransaction} style={{backgroundColor: colors.button}} className="my-6 rounded-full p-3 shadow-sm mx-2">
-            <Text className="text-center text-white text-lg font-bold">Add Transaction</Text>
-          </TouchableOpacity>
+          {
+            loading? (
+              <Loading />
+            ): (
+                <TouchableOpacity onPress={handleTransaction} style={{backgroundColor: colors.button}} className="my-6 rounded-full p-3 shadow-sm mx-2">
+                   <Text className="text-center text-white text-lg font-bold">Add Transaction</Text>
+                </TouchableOpacity>
+            )
+          }
+          
         </View>
       </View>
     </ScreenWrapper>
